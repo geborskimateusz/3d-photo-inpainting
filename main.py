@@ -142,38 +142,3 @@ def render(image_folder):
                             mean_loc_depth=mean_loc_depth)
     print('invoked render end')
 
-
-import boto3
-import botocore
-from tempfile import TemporaryDirectory
-import os, os.path
-from io import BytesIO
-from PIL import Image
-
-BUCKET_NAME = 'insta3d'
-BUCKET_FILE_NAME = 'testuser121/penguinuhh-c8HSJgY2Do4-unsplash./image/penguinuhh-c8HSJgY2Do4-unsplash.jpg' #/image/penguinuhh-c8HSJgY2Do4-unsplash.jpg
-LOCAL_FILE_NAME = '/home/mat/Downloads/image'
-
-def download_s3_file():
-    s3 = boto3.client('s3')
-    with TemporaryDirectory() as tempdir:
-    # tempdir = tempfile.mkdtemp(prefix="myapplication-", suffix="image")
-
-        file_byte_string = s3.get_object(Bucket=BUCKET_NAME, Key=BUCKET_FILE_NAME)['Body'].read()
-        image = Image.open(BytesIO(file_byte_string))
-
-        image.save(tempdir + '/image.jpg', 'JPEG')
-
-        render(tempdir)
-
-        
-
-
-
-
-    
-
-
-    
-
-download_s3_file()
