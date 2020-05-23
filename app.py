@@ -10,8 +10,6 @@ from PIL import Image
 import uuid
 from flask import send_file, send_from_directory, safe_join, abort
 
-BUCKET_NAME = "insta3d"
-
 app = Flask(__name__)
 
 
