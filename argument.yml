@@ -8,7 +8,9 @@ x_shift_range: [0.00, 0.00, -0.02, -0.02]
 y_shift_range: [0.00, 0.00, -0.02, -0.00]
 z_shift_range: [-0.05, -0.05, -0.07, -0.07]
 traj_types: ['double-straight-line', 'double-straight-line', 'circle', 'circle']
+# traj_types: ['double-straight-line']
 video_postfix: ['dolly-zoom-in', 'zoom-in', 'circle', 'swing']
+# video_postfix: ['dolly-zoom-in']
 specific: ''
 longer_side_len: 960
 src_folder: image
@@ -18,7 +20,7 @@ video_folder: video
 load_ply: False
 save_ply: True
 inference_video: True
-gpu_ids: 0
+gpu_ids: -1
 offscreen_rendering: False
 img_format: '.jpg'
 depth_format: '.npy'
