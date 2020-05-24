@@ -8,7 +8,7 @@ import os, os.path
 from io import BytesIO
 from PIL import Image
 import uuid
-from flask import send_file, send_from_directory, safe_join, abort
+from flask import send_file, send_from_directory, safe_join, abort, make_response
 
 app = Flask(__name__)
 
@@ -31,10 +31,19 @@ def render(filter_name: str):
             # /tmp/tmpyzdi56u3/tmpap5xrg11/image_dolly-zoom-in.mp4
             filename = filter_name + ".mp4"
 
-            fout = open(os.path.join(out_dir.name, filename), "w")
-            print(fout is not None)
+            fout = open(os.path.join(out_dir.name, filename), "rb")
+            print("file opened")
 
-            return send_from_directory(out_dir.name, filename=filename, as_attachment=True)
+            response = make_response(fout.read().decode(errors="replace"))
+            print("response")
+
+            response.headers.set("Content-Type", "mp4")
+            print("file ctype")
+
+            response.headers.set("Content-Disposition", "attachment", filename="%s.mp4")
+            print("file cdisp")
+
+            return response
 
 
 if __name__ == "__main__":
