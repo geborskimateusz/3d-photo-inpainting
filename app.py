@@ -28,21 +28,12 @@ def render(filter_name: str):
 
             render_mp4(in_dir.name, out_dir.name, filter_name)
 
-            # /tmp/tmpyzdi56u3/tmpap5xrg11/image_dolly-zoom-in.mp4
             filename = filter_name + ".mp4"
-
             fout = open(os.path.join(out_dir.name, filename), "rb")
-            print("file opened")
 
             response = make_response(fout.read().decode(errors="replace"))
-            print("response")
-
             response.headers.set("Content-Type", "mp4")
-            print("file ctype")
-
             response.headers.set("Content-Disposition", "attachment", filename="%s.mp4")
-            print("file cdisp")
-
             return response
 
 
