@@ -13,8 +13,8 @@ from flask import send_file, send_from_directory, safe_join, abort
 app = Flask(__name__)
 
 
-@app.route("/render/<filer_name>", methods=["POST"])
-def render(filer_name: str):
+@app.route("/render/<filter_name>", methods=["POST"])
+def render(filter_name: str):
     if request.method == "POST":
         f = request.files["file"]
 
@@ -26,9 +26,14 @@ def render(filer_name: str):
 
             image.save(in_dir.name + "/image.jpg", "JPEG")
 
-            render_mp4(in_dir.name, out_dir.name)
+            render_mp4(in_dir.name, out_dir.name, filter_name)
 
-            filename = filer_name + ".mp4"
+            # /tmp/tmpyzdi56u3/tmpap5xrg11/image_dolly-zoom-in.mp4
+            filename = filter_name + ".mp4"
+
+            fout = open(os.path.join(out_dir.name, filename), "w")
+            print(fout is not None)
+
             return send_from_directory(out_dir.name, filename=filename, as_attachment=True)
 
 

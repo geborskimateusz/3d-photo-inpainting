@@ -23,7 +23,7 @@ import MiDaS.MiDaS_utils as MiDaS_utils
 from bilateral_filtering import sparse_bilateral_filtering
 
 
-def render_mp4(input_dir, output_dir):
+def render_mp4(input_dir, output_dir, filer_type):
 
     print("invoked render start")
     parser = argparse.ArgumentParser()
@@ -37,7 +37,6 @@ def render_mp4(input_dir, output_dir):
     os.makedirs(config["depth_folder"], exist_ok=True)
 
     sample_list = get_MiDaS_samples(input_dir, config["depth_folder"], config, config["specific"])
-    # sample_list = get_MiDaS_samples(config['src_folder'], config['depth_folder'], config, config['specific'])
     normal_canvas, all_canvas = None, None
 
     if isinstance(config["gpu_ids"], int) and (config["gpu_ids"] >= 0):
@@ -153,7 +152,6 @@ def render_mp4(input_dir, output_dir):
             copy.deepcopy(sample["tgt_pose"]),
             sample["video_postfix"],
             copy.deepcopy(sample["ref_pose"]),
-            # copy.deepcopy(config["video_folder"]),
             copy.deepcopy(output_dir),
             image.copy(),
             copy.deepcopy(sample["int_mtx"]),
