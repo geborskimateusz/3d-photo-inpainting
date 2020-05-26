@@ -25,6 +25,7 @@ from mpl_toolkits.mplot3d import Axes3D
 import time
 from scipy.interpolate import interp1d
 from collections import namedtuple
+import filter as render_filters
 
 def path_planning(num_frames, x, y, z, path_type=''):
     if path_type == 'straight-line':
@@ -835,20 +836,29 @@ def clean_far_edge(mask_edge, mask_edge_with_id, context_edge, mask, info_on_pix
 
     return far_edge, uncleaned_far_edge, far_edge_with_id, near_edge_with_id
 
-def get_MiDaS_samples(image_folder, depth_folder, config, specific=None, aft_certain=None):
+def get_MiDaS_samples(image_folder, depth_folder, config,filter_type, specific=None, aft_certain=None):
+    filter = render_filters.filters[filter_type]
+    traj_types = filter['traj_types']
+    x_shift_range = filter['x_shift_range']
+    y_shift_range = filter['y_shift_range']
+    z_shift_range = filter['z_shift_range']
+    video_postfix = filter['video_postfix']
+
+    print('Rendering image with filter {}'.format(video_postfix))
+
     lines = [os.path.splitext(os.path.basename(xx))[0] for xx in glob.glob(os.path.join(image_folder, '*' + config['img_format']))]
     samples = []
     generic_pose = np.eye(4)
-    assert len(config['traj_types']) == len(config['x_shift_range']) ==\
-           len(config['y_shift_range']) == len(config['z_shift_range']) == len(config['video_postfix']), \
+    assert len(traj_types) == len(x_shift_range) ==\
+           len(y_shift_range) == len(z_shift_range) == len(video_postfix), \
            "The number of elements in 'traj_types', 'x_shift_range', 'y_shift_range', 'z_shift_range' and \
                'video_postfix' should be equal."
     tgt_pose = [[generic_pose * 1]]
     tgts_poses = []
-    for traj_idx in range(len(config['traj_types'])):
+    for traj_idx in range(len(traj_types)):
         tgt_poses = []
-        sx, sy, sz = path_planning(config['num_frames'], config['x_shift_range'][traj_idx], config['y_shift_range'][traj_idx],
-                                   config['z_shift_range'][traj_idx], path_type=config['traj_types'][traj_idx])
+        sx, sy, sz = path_planning(config['num_frames'], x_shift_range[traj_idx], y_shift_range[traj_idx],
+                                   z_shift_range[traj_idx], path_type=traj_types[traj_idx])
         for xx, yy, zz in zip(sx, sy, sz):
             tgt_poses.append(generic_pose * 1.)
             tgt_poses[-1][:3, -1] = np.array([xx, yy, zz])
@@ -879,7 +889,7 @@ def get_MiDaS_samples(image_folder, depth_folder, config, specific=None, aft_cer
         sdict['ref_pose'] = np.eye(4)
         sdict['tgt_pose'] = tgt_pose
         sdict['tgts_poses'] = tgts_poses
-        sdict['video_postfix'] = config['video_postfix']
+        sdict['video_postfix'] = video_postfix
         sdict['tgt_name'] = [os.path.splitext(os.path.basename(sdict['depth_fi']))[0]]
         sdict['src_pair_name'] = sdict['tgt_name'][0]
 

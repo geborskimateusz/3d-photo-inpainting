@@ -31,9 +31,9 @@ def render(filter_name: str):
             filename = filter_name + ".mp4"
             fout = open(os.path.join(out_dir.name, filename), "rb")
 
-            response = make_response(fout.read().decode(errors="replace"))
-            response.headers.set("Content-Type", "mp4")
-            response.headers.set("Content-Disposition", "attachment", filename="%s.mp4")
+            response = make_response(fout.read())
+            response.headers.set("Content-Type", "video/mp4")
+            response.headers.set("Content-Disposition", "attachment", filename=filename)
             return response
 
 

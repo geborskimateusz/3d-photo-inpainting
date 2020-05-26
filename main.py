@@ -36,7 +36,7 @@ def render_mp4(input_dir, output_dir, filer_type):
     os.makedirs(config["video_folder"], exist_ok=True)
     os.makedirs(config["depth_folder"], exist_ok=True)
 
-    sample_list = get_MiDaS_samples(input_dir, config["depth_folder"], config, config["specific"])
+    sample_list = get_MiDaS_samples(input_dir, config["depth_folder"], config, filer_type, config["specific"])
     normal_canvas, all_canvas = None, None
 
     if isinstance(config["gpu_ids"], int) and (config["gpu_ids"] >= 0):
