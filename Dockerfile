@@ -1,18 +1,18 @@
 FROM ubuntu:latest
+FROM continuumio/miniconda:latest
 LABEL  mateuszgeborski "mateuszgeborski@email.com"
 RUN apt-get update && apt-get install -y \
     python3-pip \
     python3-dev \
     build-essential
 RUN pip3 install auxlib
-FROM continuumio/miniconda3
-RUN echo "source activate env" > ~/.bashrc
-ENV PATH /opt/conda/envs/env/bin:$PATH
-RUN conda create -n 3DPhotoCreator python=3.7 anaconda
-# RUN conda activate 3DPhotoCreator
 COPY . /app
 WORKDIR /app
+RUN apt update
+RUN apt install -y libfontconfig1-dev wget ffmpeg libsm6 libxext6 libxrender-dev mesa-utils-extra libegl1-mesa-dev libgles2-mesa-dev xvfb
+RUN conda env create python=3.7 --file exported_conda_env.yml
+SHELL ["conda", "run", "-n", "3DPhotoCreator", "/bin/bash", "-c"]
 RUN pip install -r requirements.txt
-RUN conda install pytorch==1.4.0 torchvision==0.5.0 cudatoolkit==10.1.243 -c pytorch
-ENTRYPOINT ["python3"]
-CMD ["app.py"]
+EXPOSE 5000
+CMD ["conda", "run", "-n", "3DPhotoCreator", "python", "app.py"]
+
