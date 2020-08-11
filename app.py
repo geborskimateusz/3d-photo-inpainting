@@ -1,8 +1,6 @@
 import os
 from flask import Flask, render_template, request, redirect, send_file, url_for
 from main import render_mp4
-import boto3
-import botocore
 from tempfile import TemporaryDirectory
 import os, os.path
 from io import BytesIO
